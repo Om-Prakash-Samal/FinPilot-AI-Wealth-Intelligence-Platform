@@ -1,10 +1,11 @@
 import streamlit as st
-import pdfplumber
 import yfinance as yf
 import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import pdfplumber
+import re
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch
@@ -62,7 +63,6 @@ with col3:
     debt_weight = 100 - equity_weight - gold_weight
     st.metric("Debt Allocation (%)", debt_weight)
 
-# Normalize weights
 weights = np.array([equity_weight, gold_weight, debt_weight]) / 100
 
 # ----------------------------
@@ -78,22 +78,28 @@ data.columns = ["Equity", "Gold", "Debt"]
 data = data.dropna()
 
 returns = data.pct_change().dropna()
-
-# Portfolio returns
 portfolio_returns = returns.dot(weights)
 
-annual_return = portfolio_returns.mean() * 252
+annual_return = portfolio_returns.mean() * 252   # decimal (e.g. 0.12)
 volatility = portfolio_returns.std() * np.sqrt(252)
 
 # ----------------------------
-# SIP Calculation
+# CORRECT SIP CALCULATION
 # ----------------------------
 
-monthly_rate = annual_return / 12
-months = years * 12
+def calculate_sip(target, annual_return_decimal, years):
 
-sip = goal_amount / (((1 + monthly_rate) ** months - 1) / monthly_rate * (1 + monthly_rate))
-sip = round(sip)
+    r = annual_return_decimal / 12
+    n = years * 12
+
+    if r == 0:
+        return target / n
+
+    sip = target / (((1 + r)**n - 1) / r * (1 + r))
+    return sip
+
+sip = calculate_sip(goal_amount, annual_return, years)
+
 
 # ----------------------------
 # RISK METRICS
@@ -115,7 +121,6 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Finance OS"
 ])
 
-
 # ----------------------------
 # TAB 1 - DASHBOARD
 # ----------------------------
@@ -131,7 +136,6 @@ with tab1:
     colD.metric("Monthly SIP Required", f"₹{sip:,.0f}")
     colE.metric("Value at Risk (95%)", f"{var_95:.2f}%")
 
-    # Allocation Pie
     fig_alloc = px.pie(
         names=["Equity", "Gold", "Debt"],
         values=[equity_weight, gold_weight, debt_weight],
@@ -147,7 +151,6 @@ with tab1:
 with tab2:
 
     st.subheader("Portfolio Backtest (5 Years)")
-
     cumulative = (1 + portfolio_returns).cumprod()
 
     fig_backtest = go.Figure()
@@ -171,9 +174,12 @@ with tab3:
 
     for _ in range(simulations):
         value = 0
-        for _ in range(years):
-            random_return = np.random.normal(annual_return, volatility)
-            value = (value + sip * 12) * (1 + random_return)
+        for _ in range(years * 12):
+            monthly_random = np.random.normal(
+                annual_return / 12,
+                volatility / np.sqrt(12)
+            )
+            value = (value + sip) * (1 + monthly_random)
         final_values.append(value)
 
     final_values = np.array(final_values)
@@ -229,31 +235,24 @@ with tab5:
 
     if uploaded_file:
 
-        # ----------------------------
-        # HANDLE CSV
-        # ----------------------------
         if uploaded_file.type == "text/csv":
-
             df = pd.read_csv(uploaded_file)
 
-        # ----------------------------
-        # HANDLE PDF
-        # ----------------------------
         elif uploaded_file.type == "application/pdf":
 
             text_data = ""
 
             with pdfplumber.open(uploaded_file) as pdf:
                 for page in pdf.pages:
-                    text_data += page.extract_text() + "\n"
+                    page_text = page.extract_text()
+                    if page_text:
+                        text_data += page_text + "\n"
 
             lines = text_data.split("\n")
-
             transactions = []
 
             for line in lines:
                 parts = line.split()
-
                 if len(parts) >= 3:
                     try:
                         amount = float(parts[-1].replace(",", ""))
@@ -272,15 +271,11 @@ with tab5:
             st.stop()
 
         if df.empty:
-            st.error("Could not extract transactions.")
+            st.error("Could not extract transactions. Try a text-based PDF.")
             st.stop()
 
         st.write("Preview of Transactions")
         st.dataframe(df.head())
-
-        # ----------------------------
-        # CATEGORY DETECTION
-        # ----------------------------
 
         df['Category'] = np.where(
             df['Description'].str.contains("swiggy|zomato|restaurant", case=False, na=False),
@@ -294,8 +289,6 @@ with tab5:
 
         category_spend = df.groupby("Category")["Amount"].sum()
 
-        st.subheader("Spending Breakdown")
-
         fig_spend = px.pie(
             names=category_spend.index,
             values=category_spend.values,
@@ -305,45 +298,8 @@ with tab5:
         st.plotly_chart(fig_spend, use_container_width=True)
 
         total_spend = df["Amount"].sum()
-
         st.metric("Total Monthly Spend", f"₹{total_spend:,.0f}")
 
-        # ----------------------------
-        # WASTE DETECTION
-        # ----------------------------
-
-        if "Food" in category_spend.index:
-            if category_spend["Food"] > 0.3 * total_spend:
-                st.warning("High food spending detected. Consider reducing by 20%.")
-
-        # ----------------------------
-        # BUDGET SUGGESTION
-        # ----------------------------
-
-        savings_target = total_spend * 0.2
-
-        st.success(f"Suggested Monthly Investment Budget: ₹{savings_target:,.0f}")
-
-        # ----------------------------
-        # SIP CHECK
-        # ----------------------------
-
-        if savings_target > sip:
-            st.success("You can comfortably execute the required SIP.")
-        else:
-            st.error("Increase savings to achieve your goal.")
-
-        # ----------------------------
-        # REBALANCING CHECK
-        # ----------------------------
-
-        drift = np.random.uniform(-5, 5)
-
-        if abs(drift) > 3:
-            st.warning("Portfolio drift detected. Monthly rebalancing recommended.")
-        else:
-            st.success("Portfolio allocation is within optimal range.")
-
-        st.info("Note: SIP execution requires broker API integration.")
 st.markdown("---")
 st.markdown("FinPilot X | Built for Serious Investors")
+
