@@ -110,3 +110,22 @@ Financial health score engine
 Cashflow forecasting model
 
 Mobile responsive UI upgrade
+
+*Folder Structure*
+finpilot/
+│
+├── main.py
+├── agent/
+│   ├── planner.py
+│   ├── tools.py
+│   ├── decision_engine.py
+│   ├── monitoring.py
+│
+├── database/
+│   ├── firestore.py
+│
+├── models/
+│   ├── portfolio.py
+│   ├── risk.py
+│
+└── utils/
