@@ -1,3 +1,5 @@
+#Need to import the csv and pdf reader
+
 import streamlit as st
 import yfinance as yf
 import numpy as np
@@ -302,4 +304,5 @@ with tab5:
 
 st.markdown("---")
 st.markdown("FinPilot X | Built for Serious Investors")
+
 
