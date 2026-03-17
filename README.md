@@ -110,8 +110,7 @@ Financial health score engine
 Cashflow forecasting model
 
 Mobile responsive UI upgrade
-
-*Folder Structure*
+```bash
 finpilot/
 │
 ├── main.py
@@ -129,3 +128,5 @@ finpilot/
 │   ├── risk.py
 │
 └── utils/
+
+```
