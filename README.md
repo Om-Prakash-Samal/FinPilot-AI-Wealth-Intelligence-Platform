@@ -17,7 +17,7 @@
 
 ---
 
-## ⚡ TL;DR
+## About
 
 > **FinPilot is a fintech project** that turns raw bank statements into a full **AI wealth advisor** — but its beating heart is the **SIP Feasibility & Monte Carlo Probability Engine**, which simulates thousands of possible market futures to tell you the *real* odds your SIP hits your financial goal.
 
@@ -25,13 +25,13 @@ If you've ever wondered *"will my ₹5,000/month SIP actually get me to ₹50 la
 
 ---
 
-## 🎯 The Core Problem FinPilot Solves
+##  The Core Problem FinPilot Solves
 
 Most personal finance apps stop at "here's a pie chart of your spending." **FinPilot goes further.**
 
 The **primary mission** of this project is to solve a question every retail investor asks and almost nobody can actually answer with data:
 
-> ### 🎲 "Given market volatility, what is the real probability that my SIP investment plan will achieve my financial goal?"
+> ###  "Given market volatility, what is the real probability that my SIP investment plan will achieve my financial goal?"
 
 FinPilot answers this using a **Monte Carlo Probability Engine** — running thousands of simulated market paths against your SIP contributions, timeline, and risk profile to produce a statistically grounded feasibility score, instead of a static assumed-return calculator like every other SIP calculator on the internet.
 
@@ -39,20 +39,20 @@ Everything else in FinPilot — spending analysis, budgeting, rebalancing — ex
 
 ---
 
-## 📚 Table of Contents
+##  Table of Contents
 
-- [🎲 Investment Intelligence — SIP + Monte Carlo Engine (The Heart of FinPilot)](#-investment-intelligence--sip-monte-carlo-engine-the-heart-of-finpilot)
-- [📊 Spending Analysis](#-spending-analysis)
-- [🕵️ Waste Detection Engine](#️-waste-detection-engine)
-- [🧠 Smart Budget Creation](#-smart-budget-creation)
-- [📈 Portfolio Tracking](#-portfolio-tracking)
-- [🔁 Monthly Rebalancing Engine](#-monthly-rebalancing-engine)
-- [📄 PDF Bank Statement Support](#-pdf-bank-statement-support)
-- [🛠️ Tech Stack](#️-tech-stack)
-- [🏗️ Project Architecture](#️-project-architecture)
-- [🚀 Vision](#-vision)
-- [🗺️ Future Roadmap](#️-future-roadmap)
-- [📂 Folder Structure](#-folder-structure)
+- [ Investment Intelligence — SIP + Monte Carlo Engine (The Heart of FinPilot)](#-investment-intelligence--sip-monte-carlo-engine-the-heart-of-finpilot)
+- [ Spending Analysis](#-spending-analysis)
+- [ Waste Detection Engine](#️-waste-detection-engine)
+- [ Smart Budget Creation](#-smart-budget-creation)
+- [ Portfolio Tracking](#-portfolio-tracking)
+- [ Monthly Rebalancing Engine](#-monthly-rebalancing-engine)
+- [ PDF Bank Statement Support](#-pdf-bank-statement-support)
+- [ Tech Stack](#️-tech-stack)
+- [ Project Architecture](#️-project-architecture)
+- [ Vision](#-vision)
+- [ Future Roadmap](#️-future-roadmap)
+- [ Folder Structure](#-folder-structure)
 
 ---
 
@@ -200,6 +200,6 @@ finpilot/
 
 ### 💡 FinPilot doesn't just track your money — it simulates its future.
 
-**Built with Python 🐍 + Streamlit 📊 + Monte Carlo 🎲**
+**Built with Python  + Streamlit  + Monte Carlo 🎲**
 
 </div>
