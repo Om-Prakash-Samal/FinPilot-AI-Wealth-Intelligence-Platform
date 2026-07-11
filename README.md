@@ -136,7 +136,7 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-    U[👤 User] --> UI[Streamlit UI]
+    U[ User] --> UI[Streamlit UI]
     UI --> P[agent/planner.py]
     P --> T[agent/tools.py]
     P --> DE[agent/decision_engine.py]
