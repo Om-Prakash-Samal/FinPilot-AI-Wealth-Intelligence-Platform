@@ -1,6 +1,6 @@
 <div align="center">
 
-# 💸 FinPilot — AI Wealth Intelligence Platform
+#  FinPilot — AI Wealth Intelligence Platform
 
 ### *Your Money's Autopilot.*
 
